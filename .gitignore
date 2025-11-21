@@ -1,9 +1,34 @@
-vendor/
-.idea/
-.vscode/
+# Dependencies
+/vendor/
+composer.lock
+
+# IDE
+/.idea/
+/.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Testing
 .phpunit.result.cache
 .phpunit.cache
-composer.lock
-build/
+/build/
+/coverage/
+/.phpunit.cache
+
+# OS
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+*~
+
+# Laravel
+.env
+.env.backup
+.env.production
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

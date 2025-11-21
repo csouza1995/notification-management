@@ -5,65 +5,88 @@
 Package Laravel para gerenciamento completo de notificações com preferências de usuário por canal.
 
 ### Problema que resolve
-- Gap no mercado Laravel: falta um package robusto que permita usuários escolherem por quais canais querem receber cada tipo de notificação
-- Centralizar gerenciamento de múltiplos canais de notificação
-- Permitir registro de canais customizados facilmente
+- ✅ Gap no mercado Laravel: falta um package robusto que permita usuários escolherem por quais canais querem receber cada tipo de notificação
+- ✅ Centralizar gerenciamento de múltiplos canais de notificação
+- ✅ Permitir registro de canais customizados facilmente
+- ✅ Automatizar o envio de notificações baseado em eventos Laravel
+- ✅ Fornecer API REST completa para gerenciamento de preferências
 
-## 🎯 Funcionalidades Principais
+## 🎯 Funcionalidades Implementadas
 
-### 1. Sistema de Canais
-- Suporte a múltiplos canais: Email, SMS, Push, Slack, Discord, etc.
-- Registry para registrar canais customizados
-- Configuração flexível de canais disponíveis
+### 1. Sistema de Canais ✅
+- ✅ Suporte a canais nativos Laravel: mail, database, broadcast
+- ✅ Registry (ChannelRegistry) para registrar canais customizados via código ou config
+- ✅ Interface NotificationChannelInterface para criar canais customizados
+- ✅ Configuração flexível de canais disponíveis
 
-### 2. Preferências do Usuário
-- Usuários podem escolher quais canais querem receber notificações
-- Preferências por tipo de notificação
-- Interface para gerenciar preferências
+### 2. Preferências do Usuário ✅
+- ✅ Usuários escolhem quais canais querem receber notificações
+- ✅ Preferências granulares por tipo de notificação + canal
+- ✅ API REST completa (7 endpoints) para gerenciar preferências
+- ✅ Defaults configuráveis com suporte a wildcard (*)
+- ✅ Auto-inicialização de preferências para novos usuários
 
-### 3. Notification Manager
-- Sistema inteligente que verifica preferências antes de enviar
-- Disparo automático em múltiplos canais
-- Log de notificações enviadas
+### 3. Notification Manager ✅
+- ✅ Sistema inteligente que verifica preferências antes de enviar
+- ✅ Disparo automático em múltiplos canais
+- ✅ Log completo de notificações enviadas (notification_logs)
+- ✅ Método sendByType() para facilitar envio
+- ✅ Suporte a filas (ShouldQueue)
 
-## 🏗️ Arquitetura
+### 4. Event-to-Notification Mapping ✅ (Nova Feature!)
+- ✅ Mapeamento automático de eventos Laravel → notificações
+- ✅ Extração de notifiable via string, dot notation ou closure
+- ✅ Suporte a múltiplos notifiables (collections)
+- ✅ Notificações condicionais
+- ✅ Dados customizados por evento
+- ✅ Habilitar/desabilitar mapeamentos individuais
+
+### 5. Traits e Helpers ✅
+- ✅ HasNotificationPreferences trait para User model
+- ✅ UsesNotificationPreferences trait para Notification classes
+- ✅ Force channels (sobrescrever preferências do usuário)
+- ✅ Allowed channels (limitar canais disponíveis)
+
+### 6. Built-in Notifications ✅
+- ✅ UserLoggedNotification (detecção de login com IP, user agent, localização)
+
+## 🏗️ Arquitetura Implementada
 
 ### Database Schema
 
-#### notification_channels
-- id
-- name (email, sms, push, slack, etc)
-- driver_class
-- is_active
-- config (json)
-- timestamps
-
-#### user_notification_preferences
+#### user_notification_preferences ✅
 - id
 - user_id
-- notification_type
-- channel_id
-- is_enabled
+- notification_type (string: 'order.shipped', 'user.logged', etc)
+- channel_name (string: 'mail', 'database', 'sms', etc)
+- is_enabled (boolean)
 - timestamps
+- **unique(user_id, notification_type, channel_name)**
 
-#### notification_logs (opcional)
+#### notification_logs ✅
 - id
 - user_id
+- channel_name
 - notification_type
-- channel_id
 - status (sent, failed, pending)
 - payload (json)
 - error_message (nullable)
 - sent_at
 - timestamps
 
-### Componentes Principais
+**Mudança de Arquitetura:** ❌ notification_channels table foi removida. Canais são agora registrados via config ou código (ChannelRegistry), tornando o sistema mais flexível e sem necessidade de gerenciamento de banco de dados para canais.
 
-1. **NotificationChannel Model**: Representa os canais disponíveis
-2. **UserNotificationPreference Model**: Preferências dos usuários
-3. **ChannelRegistry**: Registra e gerencia drivers de canais
-4. **NotificationManager**: Orquestra o envio das notificações
-5. **HasNotificationPreferences Trait**: Adiciona funcionalidades ao User model
+### Componentes Principais Implementados
+
+1. **UserNotificationPreference Model** ✅: Preferências dos usuários
+2. **NotificationLog Model** ✅: Histórico de notificações enviadas
+3. **ChannelRegistry** ✅: Registra e gerencia drivers de canais customizados
+4. **NotificationManager** ✅: Orquestra o envio das notificações com verificação de preferências
+5. **EventNotificationMapper** ✅: Mapeia eventos para notificações automaticamente
+6. **HasNotificationPreferences Trait** ✅: Adiciona funcionalidades ao User model
+7. **UsesNotificationPreferences Trait** ✅: Simplifica criação de notificações
+8. **NotificationPreferenceController** ✅: API REST (7 endpoints)
+9. **SendUserLoggedNotification Listener** ✅: Listener exemplo para Login event
 
 ## 📦 Requisitos
 
@@ -169,21 +192,32 @@ $user->wantsNotificationVia('order.shipped', 'email'); // true/false
 $user->getActiveChannelsFor('order.shipped'); // ['email', 'push']
 ```
 
-## 🚀 Roadmap
+## ✅ Status do Projeto
 
-- [ ] Core functionality
-- [ ] Built-in channels (email, database)
-- [ ] API REST para gerenciar preferências
-- [ ] Interface UI opcional (Blade components)
-- [ ] Testes automatizados
-- [ ] Documentação completa
-- [ ] Suporte a notificações em lote
-- [ ] Queue support
-- [ ] Rate limiting por canal
+### Completado (100% Backend)
+- ✅ Core functionality (NotificationManager, ChannelRegistry)
+- ✅ Built-in channels (mail, database, broadcast)
+- ✅ API REST completa (7 endpoints)
+- ✅ Testes automatizados (37 tests, 75 assertions - Pest)
+- ✅ Documentação completa (README, 7 docs + CHANGELOG + SECURITY)
+- ✅ Queue support (ShouldQueue)
+- ✅ Built-in notification (UserLoggedNotification)
+- ✅ Event-to-Notification automatic mapping
+- ✅ Traits (HasNotificationPreferences, UsesNotificationPreferences)
+- ✅ Channel limiting (forceChannels, allowedChannels)
+- ✅ PHPStan level 5 (0 errors)
+- ✅ GitHub Actions (tests, phpstan, code style)
 
-## 📝 Notas de Desenvolvimento
+### Não Implementado (Decisão de Escopo)
+- ❌ Interface UI (Blade/Livewire) - **Backend only**
+- ⏳ Suporte a notificações em lote - **Futuro**
+- ⏳ Rate limiting por canal - **Futuro**
 
-- Manter código desacoplado e testável
-- Seguir PSR-12 coding standards
-- Documentar todos os métodos públicos
-- Criar exemplos práticos na documentação
+## 📝 Padrões de Desenvolvimento Seguidos
+
+- ✅ Código desacoplado e testável
+- ✅ PSR-12 coding standards (Laravel Pint)
+- ✅ Todos os métodos públicos documentados
+- ✅ Exemplos práticos na documentação
+- ✅ Type hints e return types
+- ✅ Static analysis (PHPStan level 5)
