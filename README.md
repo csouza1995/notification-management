@@ -9,13 +9,13 @@ A powerful Laravel package that allows users to manage their notification prefer
 
 ## Features
 
-✨ **User Preferences**: Let users choose which channels they want to receive notifications through
-📱 **Multiple Channels**: Support for Laravel native channels (mail, database, broadcast) and custom channels
-🔧 **Easy Integration**: Simple trait to add to your User model
-📊 **Notification Logging**: Track all sent notifications
-🎯 **Type-based Control**: Different preferences per notification type
-🚀 **API Ready**: Built-in REST API for managing preferences
-🔐 **Built-in Notifications**: Includes `user.logged` notification out of the box
+✨ **User Preferences**: Let users choose which channels they want to receive notifications through  
+📱 **Multiple Channels**: Support for Laravel native channels (mail, database, broadcast) and custom channels  
+🔧 **Easy Integration**: Simple trait to add to your User model  
+📊 **Notification Logging**: Track all sent notifications  
+🎯 **Type-based Control**: Different preferences per notification type  
+🚀 **API Ready**: Built-in REST API for managing preferences  
+🔐 **Built-in Notifications**: Includes `user.logged` notification out of the box  
 
 ## Installation
 
